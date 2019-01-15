@@ -49,13 +49,14 @@ class BLiveClient:
         self._future = None
 
         self.logger = logging.getLogger(__name__)
-        handler = logging.StreamHandler()
-        handler.setFormatter(logging.Formatter(
-            '(%(asctime)s) [%(levelname)s] - %(message)s',
-            datefmt='%y-%m-%d %H:%M:%S'))
-        self.logger.addHandler(handler)
-        self.logger.setLevel(loggerLevel)
-        self.logger.debug('init complete.')
+        if not self.logger.handlers:
+            handler = logging.StreamHandler()
+            handler.setFormatter(logging.Formatter(
+                '(%(asctime)s) [%(levelname)s] - %(message)s',
+                datefmt='%y-%m-%d %H:%M:%S'))
+            self.logger.addHandler(handler)
+            self.logger.setLevel(loggerLevel)
+            self.logger.debug('init complete.')
 
     def start(self):
         """
