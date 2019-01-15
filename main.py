@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
-from asyncio import get_event_loop
+import asyncio
 from ssl import SSLError
 import logging
 import signal
@@ -32,6 +32,18 @@ class MyBLiveClient(BLiveClient):
         return False
 
 
+clients = []
+
+
+def ask_exit():
+    print(asyncio.Task.all_tasks())
+    for task in asyncio.Task.all_tasks():
+        task.cancel()
+    print(asyncio.Task.all_tasks())
+    for client in clients:
+        client.stop()
+
+
 def main():
     # room_id = input('输入房间号: ')
     room_ids = [int(item) for item in sys.argv[1:]]
@@ -39,13 +51,15 @@ def main():
         print('Usage: python main.py room_id [room_id ...]')
         exit()
     db = DataBase('sqlite:///danmu.db')
-    loop = get_event_loop()
+    loop = asyncio.get_event_loop()
 
     for room_id in room_ids:
         client = MyBLiveClient(room_id=room_id, ssl=True, loop=None,
                                loggerLevel=logging.INFO, db=db)
         client.start()
-        signal.signal(signal.SIGINT, lambda signum, frame: client.stop())
+        clients.append(client)
+
+    signal.signal(signal.SIGINT, lambda a, b: ask_exit())
 
     try:
         loop.run_forever()

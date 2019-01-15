@@ -78,7 +78,8 @@ class BLiveClient:
         取消相关的协程，不会停止事件循环
         """
         if self._future is not None:
-            self._future.cancel()
+            if not self._loop.is_closed():
+                self._future.cancel()
 
     def __on_done(self, future):
         self._future = None
@@ -100,7 +101,8 @@ class BLiveClient:
 
         except Exception as e:
             if not self._handle_error(e):
-                self._future.cancel()
+                if not self._loop.is_closed():
+                    self._future.cancel()
                 raise
 
     def _make_packet(self, data, operation):
@@ -156,10 +158,17 @@ class BLiveClient:
                 except CancelledError:
                     break
                 continue
+            
+            except RuntimeError as ex:
+                if 'closed' in str(ex):
+                    break
+                else:
+                    raise
 
             except Exception as e:
                 if not self._handle_error(e):
-                    self._future.cancel()
+                    if not self._loop.is_closed():
+                        self._future.cancel()
                 import traceback
                 traceback.print_exc()
                 raise
@@ -184,7 +193,8 @@ class BLiveClient:
                 continue
             except Exception as e:
                 if not self._handle_error(e):
-                    self._future.cancel()
+                    if not self._loop.is_closed():
+                        self._future.cancel()
                     raise
                 continue
 
