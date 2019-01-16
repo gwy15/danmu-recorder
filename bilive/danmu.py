@@ -13,7 +13,7 @@ class Danmu(Base):
 
     id = Column(sqlalchemy.Integer, autoincrement=True, primary_key=True)
     room_id = Column(sqlalchemy.Integer, nullable=False, index=True)
-    time_in_ms = Column(sqlalchemy.Integer, nullable=False, index=True)
+    time_in_ms = Column(sqlalchemy.BIGINT, nullable=False, index=True)
 
     # danmu info
     fontsize = Column(sqlalchemy.SmallInteger, nullable=False)
@@ -54,3 +54,10 @@ class Danmu(Base):
             uid=uid, uname=uname, isAdmin=isAdmin, isVIP=isVIP,
             badgeLevel=badgeLevel, badgeText=badgeText, badgeHostName=badgeHostName, badgeHostRoomId=badgeHostRoomId,
             UL=UL)
+
+    def copy(self):
+        dic = {
+            k: v
+            for k, v in self.__dict__.items()
+            if not k.startswith('_')}
+        return Danmu(**dic)
