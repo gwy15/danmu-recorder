@@ -45,12 +45,11 @@ def ask_exit():
 
 
 def main():
-    # room_id = input('输入房间号: ')
-    room_ids = [int(item) for item in sys.argv[1:]]
-    if not room_ids:
-        print('Usage: python main.py room_id [room_id ...]')
-        exit()
-    db = DataBase('sqlite:///danmu.db')
+    with open('./config.json', 'r', encoding='utf8') as f:
+        conf = json.load(f)
+    room_ids = conf['room_ids']
+    db = DataBase(conf['db'])
+
     loop = asyncio.get_event_loop()
 
     for room_id in room_ids:
