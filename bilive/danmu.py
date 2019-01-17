@@ -1,8 +1,9 @@
-import time
+import datetime
 
 import sqlalchemy
 from sqlalchemy import Column
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.dialects import mysql
 
 Base = declarative_base()
 
@@ -13,7 +14,7 @@ class Danmu(Base):
 
     id = Column(sqlalchemy.Integer, autoincrement=True, primary_key=True)
     room_id = Column(sqlalchemy.Integer, nullable=False, index=True)
-    time_in_ms = Column(sqlalchemy.BIGINT, nullable=False, index=True)
+    time = Column(mysql.TIMESTAMP(fsp=3), nullable=False, index=True)
 
     # danmu info
     fontsize = Column(sqlalchemy.SmallInteger, nullable=False)
@@ -48,7 +49,7 @@ class Danmu(Base):
             badgeLevel, badgeText, badgeHostName, badgeHostRoomId = None, None, None, None
         UL, *_ = ULInfo
         return Danmu(
-            time_in_ms=int(time.time() * 1000), room_id=room_id,
+            time=datetime.datetime.now(), room_id=room_id,
             fontsize=fontsize, color=color,
             msg=msg,
             uid=uid, uname=uname, isAdmin=isAdmin, isVIP=isVIP,
