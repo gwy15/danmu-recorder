@@ -37,10 +37,9 @@ def status():
     # time info
     time_info = [list(item) for item in db.session.execute('''
         SELECT DATE_FORMAT(MAX(time), "%Y-%m-%d %H:%i:00") as t, COUNT(*) FROM bilibili.danmu_records
-        WHERE time > utc_timestamp() - INTERVAL 48 HOUR
-        GROUP BY UNIX_TIMESTAMP(time) DIV 300
-        ORDER BY t DESC
-        LIMIT 300;
+        WHERE time > utc_timestamp() - INTERVAL 24 HOUR
+        GROUP BY UNIX_TIMESTAMP(time) DIV 60
+        ORDER BY t DESC;
     ''').fetchall()] # last 24 hours
 
     # recent danmus
@@ -67,7 +66,7 @@ def status():
     return flask.render_template(
         'status.html',
         danmus=danmus, total_num=total_num,
-        time_info=json.dumps(time_info).replace('"', '\\"'))
+        time_info=json.dumps(time_info))
 
 
 if __name__ == "__main__":
