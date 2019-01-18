@@ -36,6 +36,23 @@
         {% endfor %}
         </tbody>
     </table>
+    <p>
+        <a class="btn btn-light" data-toggle="collapse" href="#collapseDiv" role="button" aria-expanded="false" aria-controls="collapseDiv">
+            Show help
+        </a>
+    </p>
+    <div class="collapse" id="collapseDiv">
+        <div class="card card-body">
+            <h4>url query args:</h4>
+            <p>limit: int, max number of items,</p>
+            <p>room_id: int, room id,</p>
+            <p>uname: str, user name,</p>
+            <p>regexp: str, regular expression for msg to match,</p>
+            <p>start_date: str, format yyyy-mm-dd,</p>
+            <p>end_date: str, format yyyy-mm-dd,</p>
+            <p>days_limit: int, the length of the time duration to be queried in days.</p>
+        </div>
+    </div>
 </div>
 {% endblock %}
 
