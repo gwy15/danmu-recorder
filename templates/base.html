@@ -6,7 +6,9 @@
     <title> {% block title %}
     Default title
     {% endblock %} </title>
+    {% block favicon %}
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    {% endblock %}
     {{ bootstrap.load_css() }}
 </head>
 <body>
