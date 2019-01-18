@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import os
 import json
 import struct
 import sys
@@ -9,6 +9,7 @@ from enum import IntEnum
 # noinspection PyProtectedMember
 from ssl import _create_unverified_context
 import logging
+from logging.handlers import RotatingFileHandler
 
 import aiohttp
 import websockets
@@ -48,14 +49,28 @@ class BLiveClient:
         self._loop = loop or get_event_loop()
         self._future = None
 
-        self.logger = logging.getLogger(__name__)
+        self.logger = logging.getLogger(__name__ + str(room_id))
+        self.logger.propagate = False
         if not self.logger.handlers:
+            self.logger.setLevel(logging.DEBUG)
+
             handler = logging.StreamHandler()
             handler.setFormatter(logging.Formatter(
                 '(%(asctime)s) [%(levelname)s] - %(message)s',
                 datefmt='%y-%m-%d %H:%M:%S'))
+            handler.setLevel(loggerLevel)
             self.logger.addHandler(handler)
-            self.logger.setLevel(loggerLevel)
+
+            if not os.path.exists('log'):
+                os.mkdir('log')
+            fhandler = RotatingFileHandler(
+                f'log/{room_id}.log', maxBytes=2*1024*1024, backupCount=5)
+            fhandler.setFormatter(logging.Formatter(
+                '(%(asctime)s) [%(levelname)s] - %(message)s',
+                datefmt='%y-%m-%d %H:%M:%S'))
+            fhandler.setLevel(logging.DEBUG)
+            self.logger.addHandler(fhandler)
+
             self.logger.debug('init complete.')
 
     def start(self):
@@ -158,7 +173,7 @@ class BLiveClient:
                 except CancelledError:
                     break
                 continue
-            
+
             except RuntimeError as ex:
                 if 'closed' in str(ex):
                     break
@@ -225,7 +240,7 @@ class BLiveClient:
             else:
                 body = message[offset + self.HEADER_STRUCT.size:
                                offset + header.total_len]
-                self.logger.debug('未知包类型: ' + header + ' ' + body)
+                # self.logger.debug('未知包类型: ' + header + ' ' + body)
 
             offset += header.total_len
 
@@ -258,7 +273,8 @@ class BLiveClient:
         }
 
         async def default_rule():
-            self.logger.info(f'未知命令: {cmd}')
+            # self.logger.debug(f'未知命令: {cmd}')
+            pass
 
         func = rules.get(cmd, default_rule)
         if func:

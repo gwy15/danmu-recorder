@@ -19,7 +19,7 @@ class MyBLiveClient(BLiveClient):
     async def _on_get_danmaku(self, info):
         danmu = Danmu.fromInfo(info, self._short_id)
         self.db.insert(danmu)
-        self.logger.info(
+        self.logger.debug(
             f'{self._short_id:-6d} UL{danmu.UL:-2d} {danmu.uname}({danmu.uid}): {danmu.msg}')
 
     def _on_stop(self, exc):
@@ -36,10 +36,8 @@ clients = []
 
 
 def ask_exit():
-    print(asyncio.Task.all_tasks())
     for task in asyncio.Task.all_tasks():
         task.cancel()
-    print(asyncio.Task.all_tasks())
     for client in clients:
         client.stop()
 
