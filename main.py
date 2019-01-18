@@ -48,7 +48,7 @@ def main():
     with open('./config.json', 'r', encoding='utf8') as f:
         conf = json.load(f)
     room_ids = conf['room_ids']
-    db = DataBase(conf['db'])
+    db = DataBase(conf['DB_PATH'])
 
     loop = asyncio.get_event_loop()
 
