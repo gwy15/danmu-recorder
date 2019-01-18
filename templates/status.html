@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Bilibili Danmu Records{% endblock %}
+
+{% block navbar %}
+<nav class="navbar navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="#">⭐</a>
+        <span class="nav-text text-white">总数量: {{total_num}}</>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <table class="table">
+        <caption>Latest Records</caption>
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">时间</th>
+                <th scope="col">直播间</th>
+                <th scope="col">用户</th>
+                <th scope="col">发言</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+        {% for danmu in danmus %}
+            <tr>
+                <th scope="row">{{loop.index}}</th>
+                <td>{{moment(danmu.time).fromNow(refresh=True)}}</td>
+                <td>{{danmu.room_id}}</td>
+                <td>{{danmu.uname}}</td>
+                <td>{{danmu.msg}}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    {{ moment.include_jquery() }}
+    {{ moment.include_moment() }}
+    {{ moment.lang('zh-CN') }}
+{% endblock %}

@@ -2,3 +2,8 @@ aiohttp
 websockets
 SQLAlchemy
 pymysql
+
+# flask
+flask
+bootstrap-flask
+flask-moment
