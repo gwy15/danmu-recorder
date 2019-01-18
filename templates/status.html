@@ -1,6 +1,38 @@
 {% extends "base.html" %}
 {% block title %}Bilibili Danmu Records{% endblock %}
 
+{% block style %}
+{{super()}}
+<style>
+#plot-main{
+    height: 240px;
+    width: 360px;
+}
+@media(min-width: 576px){
+#plot-main{
+    height: 360px;
+    width: 520px;
+}}
+@media(min-width: 768px){
+#plot-main{
+    height: 360px;
+    width: 720px;
+}}
+@media(min-width: 992px){
+#plot-main{
+    height: 400px;
+    width: 920px;
+}}
+@media(min-width: 1200px){
+#plot-main{
+    height: 400px;
+    width: 1120px;
+}}
+
+
+</style>
+{% endblock %}
+
 {% block navbar %}
 <nav class="navbar navbar-dark bg-dark">
     <div class="container">
@@ -12,6 +44,16 @@
 
 {% block content %}
 <div class="container">
+    <p class='mt-2'>
+        <a class="btn btn-light" data-toggle="collapse" href="#collapsePlot" role="button" aria-expanded="false" aria-controls="collapsePlot">
+            Show time plot
+        </a>
+    </p>
+    <div class="collapse" id="collapsePlot">
+        <div class="card card-body" id="plot-main">
+        </div>
+    </div>
+
     <table class="table">
         <caption>Latest Records</caption>
         <thead>
@@ -58,7 +100,46 @@
 
 {% block scripts %}
     {{ super() }}
+    <script src="{{ url_for('static', filename='js/echarts.common.min.js') }}"></script>
     {{ moment.include_jquery() }}
     {{ moment.include_moment() }}
     {{ moment.lang('zh-CN') }}
+
+    <script>
+    var myChart = echarts.init(document.getElementById('plot-main'));
+    var data = JSON.parse("{{ time_info | safe}}");
+    var option = {
+        xAxis: {
+            type: 'time',
+            splitLine: {
+                show: false
+            }
+        },
+        yAxis: {
+            type: 'value',
+            splitLine: {
+                show: true
+            }
+        },
+        tooltip: {
+            trigger: 'axis',
+            formatter: function (params) {
+                params = params[0];
+                var date = new Date(params.value[0]);
+                return '(' + (date.getMonth() + 1) + '/' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ') : ' + params.value[1];
+            },
+            axisPointer: {
+                animation: false
+            }
+        },
+        series: [{
+            type: 'line',
+            smooth: false,
+            showSymbol: false,
+            hoverAnimation: false,
+            data: data
+        }]
+    };
+    myChart.setOption(option);
+    </script>
 {% endblock %}

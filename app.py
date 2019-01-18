@@ -1,4 +1,5 @@
 import datetime
+import json
 
 import flask
 from flask_bootstrap import Bootstrap
@@ -29,8 +30,20 @@ def status():
     days_limit = flask.request.args.get('days_limit', None, type=int)
 
     db = DataBase(app.config['DB_PATH'])
+
+    # total num
     total_num = db.session.query(Danmu).count()
 
+    # time info
+    time_info = [list(item) for item in db.session.execute('''
+        SELECT DATE_FORMAT(MAX(time), "%Y-%m-%d %H:%i:00") as t, COUNT(*) FROM bilibili.danmu_records
+        WHERE time > utc_timestamp() - INTERVAL 48 HOUR
+        GROUP BY UNIX_TIMESTAMP(time) DIV 300
+        ORDER BY t DESC
+        LIMIT 300;
+    ''').fetchall()] # last 24 hours
+
+    # recent danmus
     query = db.session.query(Danmu)
     if room_id:
         query = query.filter(Danmu.room_id == room_id)
@@ -48,11 +61,13 @@ def status():
     if regexp:
         query = query.filter(Danmu.msg.op('regexp')(regexp))
     danmus = query.order_by(Danmu.time.desc()).limit(limit).all()
-    for danmu in danmus:
-        danmu.time -= datetime.timedelta(hours=8)
+    for danmu in danmus: # convert to utc time
+        danmu.time -= datetime.timedelta(hours=8) # 8 as the db timezone is +8
+
     return flask.render_template(
         'status.html',
-        danmus=danmus, total_num=total_num)
+        danmus=danmus, total_num=total_num,
+        time_info=json.dumps(time_info).replace('"', '\\"'))
 
 
 if __name__ == "__main__":

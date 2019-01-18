@@ -10,6 +10,8 @@
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
     {% endblock %}
     {{ bootstrap.load_css() }}
+    {% block style %}
+    {% endblock %}
 </head>
 <body>
     {% block navbar %} {% endblock %}
