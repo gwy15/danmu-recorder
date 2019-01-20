@@ -100,7 +100,7 @@
 
 {% block scripts %}
     {{ super() }}
-    <script src="{{ url_for('static', filename='js/echarts.common.min.js') }}"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/echarts/4.1.0/echarts-en.common.min.js"></script>
     {{ moment.include_jquery() }}
     {{ moment.include_moment() }}
     {{ moment.lang('zh-CN') }}
