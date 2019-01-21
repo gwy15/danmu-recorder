@@ -167,11 +167,13 @@ class BLiveClient:
             except ConnectionClosed:
                 self._websocket = None
                 # 重连
-                self.logger.warning('掉线重连中')
+                self.logger.warning('ConnectionClosed. 掉线重连中...')
                 try:
                     await sleep(5)
                 except CancelledError:
+                    self.logger.critical('Cacelled.')
                     break
+                self.logger.info('重连中...')
                 continue
 
             except RuntimeError as ex:
