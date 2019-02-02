@@ -1,9 +1,11 @@
-aiohttp
 websockets
-SQLAlchemy
+aiohttp
+sqlalchemy
 pymysql
+requests
 
-# flask
 flask
 bootstrap-flask
-flask-moment
+flask_moment
+flask-restful
+bs4

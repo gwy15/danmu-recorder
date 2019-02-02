@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}Bilibili Danmu Records - Admin{% endblock %}
+
+{% block navbar_container %}
+<a class="navbar-brand" href="#">⭐</a>
+<span class="nav-text text-white">管理界面</span>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+
+    {% for message in get_flashed_messages(with_categories=True) %}
+    <div class="alert alert-{{ message[0] }} mt-2">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        {{ message[1] }}
+    </div>
+    {% endfor %}
+
+    <form class="form-inline mt-2 mb-2" onsubmit="return sub();">
+        <div class="form-group mr-2">
+            <input type="int" class="form-control" id="input-room-id" placeholder="房间 ID">
+        </div>
+        <div class="btn btn-primary" onclick="sub()">新增监控</div>
+    </form>
+
+    <table class="table">
+        <!-- <caption>监控列表</caption> -->
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">房间号</th>
+                <th scope="col">主播</th>
+                <th scope="col">标题</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for room in rooms %}
+            <tr room={{room.id}}>
+                <th scope="row">{{loop.index}}</th>
+                <td>{{room.id}}</td>
+                <td>{{room.host}}</td>
+                <td>{{room.title}}</td>
+                <td class="delete">
+                    <span style="cursor:pointer">❌ </span>
+                </td>
+            </tr>
+            {% endfor %}
+
+            <tr>
+
+            </tr>
+        </tbody>
+    </table>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+    function sub() {
+        let roomid = $('#input-room-id').val();
+        console.log(roomid);
+        if (!roomid) {
+            alert("room id 非法.");
+            return;
+        }
+        $.post(
+            '/room/' + $('#input-room-id').val(),
+            function (data) {
+                window.location.reload();
+            }
+        );
+    }
+    $('table').on('click', '.delete', function () {
+        let roomid = $(this).parent('tr').attr('room');
+        console.log(roomid);
+        $.ajax({
+            url: '/room/' + roomid,
+            type: 'DELETE',
+            success: function (data) {
+                window.location.reload();
+            }
+        });
+    })
+</script>
+{% endblock %}

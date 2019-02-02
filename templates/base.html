@@ -6,20 +6,30 @@
     <title> {% block title %}
     Default title
     {% endblock %} </title>
+    
     {% block favicon %}
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
     {% endblock %}
+    
     {{ bootstrap.load_css() }}
-    {% block style %}
-    {% endblock %}
+
+    {% block style %} {% endblock %}
+    {% block headerscript %} {% endblock %}
 </head>
 <body>
-    {% block navbar %} {% endblock %}
+    {% block navbar %}
+        <nav class="navbar navbar-dark bg-dark">
+            <div class="container">
+                {% block navbar_container %}
+                {% endblock %}
+            </div>
+        </nav>
+    {% endblock %}
     {% block content %}{% endblock %}
     {% block footer %} {% endblock %}
 
+    {{ bootstrap.load_js() }}
     {% block scripts %}{% endblock %}
 
-{{ bootstrap.load_js() }}
 </body>
 </html>
