@@ -106,6 +106,8 @@ def admin():
 
     with Pool(max(len(roomids), 1)) as pool:
         rooms = pool.map(getRoom, roomids)
+    
+    rooms = sorted(rooms, key=lambda r: r.id)
 
     return flask.render_template('admin.html',
                                  rooms=rooms)
