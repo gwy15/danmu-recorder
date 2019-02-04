@@ -3,7 +3,23 @@
 
 {% block navbar_container %}
 <a class="navbar-brand" href="#">⭐</a>
-<span class="nav-text text-white">管理界面</span>
+
+<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#nav-items" aria-controls="nav-items"
+    aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+</button>
+
+<div class="collapse navbar-collapse" id="nav-items">
+    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+        <li class="nav-item">
+            <a class="nav-link" href="/"> 首页 </a>
+        </li>
+        <li class="nav-item active">
+            <a class="nav-link" href="/admin"> 管理 </a>
+        </li>
+    </ul>
+</div>
+
 {% endblock %}
 
 {% block content %}
