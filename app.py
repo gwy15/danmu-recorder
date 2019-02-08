@@ -154,8 +154,6 @@ def index():
     if regexp:
         query = query.filter(Danmu.msg.op('regexp')(regexp))
     danmus = query.order_by(Danmu.time.desc()).limit(limit).all()
-    for danmu in danmus:  # convert to utc time
-        danmu.time -= datetime.timedelta(hours=8)  # 8 as the db timezone is +8
 
     return flask.render_template(
         'index.html',

@@ -49,7 +49,7 @@ class Danmu(Base):
             badgeLevel, badgeText, badgeHostName, badgeHostRoomId = None, None, None, None
         UL, *_ = ULInfo
         return Danmu(
-            time=datetime.datetime.now(), room_id=room_id,
+            time=datetime.datetime.utcnow(), room_id=room_id,
             fontsize=fontsize, color=color,
             msg=msg,
             uid=uid, uname=uname, isAdmin=isAdmin, isVIP=isVIP,
