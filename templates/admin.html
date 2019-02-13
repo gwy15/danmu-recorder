@@ -46,6 +46,7 @@
                 <th scope="col">#</th>
                 <th scope="col">房间号</th>
                 <th scope="col">主播</th>
+                <th scope="col">上一条</th>
                 <th scope="col">标题</th>
                 <th scope="col"></th>
             </tr>
@@ -56,6 +57,11 @@
                 <th scope="row">{{loop.index}}</th>
                 <td>{{room.id}}</td>
                 <td>{{room.host}}</td>
+                {% if room.lastTime is none %}
+                <td>无记录</td>
+                {% else %}
+                <td>{{moment(room.lastTime).fromNow(refresh=True)}}</td>
+                {% endif %}
                 <td>{{room.title}}</td>
                 <td class="delete">
                     <span style="cursor:pointer">❌ </span>
@@ -74,6 +80,9 @@
 
 {% block scripts %}
 {{ super() }}
+{{ moment.include_jquery() }}
+{{ moment.include_moment() }}
+{{ moment.lang('zh-CN') }}
 <script>
     function sub() {
         let roomid = $('#input-room-id').val();

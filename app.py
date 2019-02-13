@@ -1,7 +1,7 @@
 import datetime
 import json
-from collections import namedtuple
 from multiprocessing.dummy import Pool
+from dataclasses import dataclass
 
 import flask
 from flask_bootstrap import Bootstrap
@@ -48,6 +48,14 @@ class RoomResource(Resource):
         return flask.jsonify({})
 
 
+@dataclass
+class Room():
+    id: int
+    host: str
+    title: str
+    lastTime: datetime.datetime
+
+
 def getApp():
     app = flask.Flask(__name__)
     app.config.from_json('config.json')
@@ -78,7 +86,6 @@ def getResponseForRoomId(room_id):
 
 
 def getRoom(room_id):
-    Room = namedtuple('Room', ('id', 'host', 'title'))
     try:
         web = getResponseForRoomId(room_id).content.decode('utf8')
         soup = bs(web, 'html.parser')
@@ -96,7 +103,8 @@ def getRoom(room_id):
     except Exception as ex:
         host = '发生错误'
         title = str(ex)
-    return Room(id=room_id, host=host, title=title)
+
+    return Room(id=room_id, host=host, title=title, lastTime=None)
 
 
 @app.route('/admin')
@@ -106,7 +114,16 @@ def admin():
 
     with Pool(max(len(roomids), 1)) as pool:
         rooms = pool.map(getRoom, roomids)
-    
+
+    db = DataBase(app.config[app.config['DB_PATH']])
+    for room in rooms:
+        record = db.session.query(Danmu)\
+            .filter(Danmu.room_id == room.id)\
+            .order_by(Danmu.time.desc())\
+            .first()
+        if record is not None:
+            room.lastTime = record.time
+
     rooms = sorted(rooms, key=lambda r: r.id)
 
     return flask.render_template('admin.html',
