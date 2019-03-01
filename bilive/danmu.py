@@ -41,7 +41,7 @@ class Danmu(Base):
     @staticmethod
     def fromInfo(info, room_id):
         # print(info)
-        danmuInfo, msg, userInfo, badgeInfo, ULInfo, titleInfo, _1, _2, _3, * = info
+        danmuInfo, msg, userInfo, badgeInfo, ULInfo, titleInfo, _1, _2, _3, *_4 = info
         _, _, fontsize, color, *_ = danmuInfo
         uid, uname, isAdmin, isVIP, *_ = userInfo
         if badgeInfo:
