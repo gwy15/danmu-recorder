@@ -147,6 +147,9 @@
     }
     var myChart = echarts.init(document.getElementById('plot-main'));
     var data = JSON.parse(String.raw `{{ time_info | safe}}`);
+    for (let item of data) {
+        item[0] = new Date(1000 * item[0]);
+    }
     var option = {
         xAxis: {
             type: 'time',

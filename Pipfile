@@ -1,0 +1,21 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple some-package"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+websockets = "*"
+aiohttp = "*"
+sqlalchemy = "*"
+pymysql = "*"
+requests = "*"
+flask = "*"
+bootstrap-flask = "*"
+flask-moment = "*"
+flask-restful = "*"
+bs4 = "*"
+
+[requires]
+python_version = "3.7"

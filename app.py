@@ -146,8 +146,9 @@ def index():
     total_num = db.session.query(Danmu).count()
 
     # time info
-    time_info = [list(item) for item in db.session.execute('''
-        SELECT DATE_FORMAT(MAX(time), "%Y-%m-%d %H:%i:00") as t, COUNT(*) FROM danmu_records
+    time_info = [[int(dec), cnt] for dec, cnt in
+                 db.session.execute('''
+        SELECT UNIX_TIMESTAMP(avg(time)) as t, COUNT(*) FROM danmu_records
         WHERE time > utc_timestamp() - INTERVAL 24 HOUR
         GROUP BY UNIX_TIMESTAMP(time) DIV 60
         ORDER BY t DESC;
